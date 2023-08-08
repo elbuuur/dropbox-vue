@@ -12,17 +12,17 @@
       <form class="space-y-6">
         <input-field
           v-model="userName"
-          @keydown.enter="createUser"
+          @keydown.enter="registrationUser"
           :error="errors.userName"
           name="userName"
-          type="string"
+          type="text"
           title="Your name"
           @reset-validation="errors.userName = $event"
         ></input-field>
 
         <input-field
           v-model="email"
-          @keydown.enter="createUser"
+          @keydown.enter="registrationUser"
           :error="errors.email"
           name="email"
           type="email"
@@ -32,7 +32,7 @@
 
         <input-field
           v-model="password"
-          @keydown.enter="createUser"
+          @keydown.enter="registrationUser"
           :error="errors.password"
           name="password"
           type="password"
@@ -40,12 +40,12 @@
           @reset-validation="errors.password = $event"
         ></input-field>
 
-        <error-text
-          v-if="errors.httpError"
-          :error-text="errors.httpError"
-        ></error-text>
+        <notification-message v-if="errors.httpError" notification-type="error">
+          {{ errors.httpError }}
+        </notification-message>
+
         <div>
-          <base-button @click="createUser" text="Create"></base-button>
+          <base-button @click="registrationUser" text="Create"></base-button>
         </div>
       </form>
 
@@ -64,14 +64,18 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { validateUserFields } from "@/utils/validation/validateUserFields";
-import { getErrors } from "@/utils/validation/getErrors";
 import { ValidationError } from "yup";
 import { useRouter } from "vue-router";
+import { validateUserFields } from "@/utils/validation/validateUserFields";
+import {
+  getValidationErrors,
+  getErrorsFromResponse,
+} from "@/utils/validation/getValidationErrors";
 import { httpClient } from "@/api";
+import { saveUserStorageData } from "@/utils/localStorageUtils";
 import InputField from "@/components/kit/input/InputField.vue";
-import ErrorText from "@/components/kit/text/ErrorText.vue";
 import BaseButton from "@/components/kit/button/BaseButton.vue";
+import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
 const userName = ref("");
 const email = ref("");
@@ -79,7 +83,7 @@ const password = ref("");
 const errors = ref<Record<string, string>>({});
 const router = useRouter();
 
-async function createUser() {
+async function registrationUser() {
   try {
     await validateUserFields(userName.value, email.value, password.value);
     errors.value = {};
@@ -90,17 +94,16 @@ async function createUser() {
         email: email.value,
         password: password.value,
       })
-      .then((response) => {
-        console.log(response);
-        // not done
-        // router.push({ name: "login" });
+      .then(() => {
+        saveUserStorageData(userName.value, email.value);
+        router.push({ name: "login" });
       })
       .catch((error) => {
-        errors.value = { httpError: error.response.data.message };
+        errors.value = getErrorsFromResponse(error.response.data.data);
       });
   } catch (error) {
     if (error instanceof ValidationError) {
-      errors.value = getErrors(error);
+      errors.value = getValidationErrors(error);
     }
   }
 }

@@ -4,7 +4,6 @@ const validationSchema = yup.object().shape({
   userName: yup
     .string()
     .optional()
-    .required("Name is required")
     .min(2, "Name must contain at least 2 characters"),
   email: yup
     .string()
@@ -17,13 +16,13 @@ const validationSchema = yup.object().shape({
 });
 
 export async function validateUserFields(
-  userName: string,
+  userName: string | undefined,
   email: string,
   password: string
 ) {
   try {
     await validationSchema.validate(
-      { userName: userName, email: email, password: password },
+      { userName, email, password },
       { abortEarly: false }
     );
     return true;

@@ -1,6 +1,13 @@
 <template>
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <notification-message
+        v-if="registeredUserName"
+        notification-type="success"
+      >
+        Hi, {{ registeredUserName }}! <br />
+        Your account has been successfully created
+      </notification-message>
       <h2
         class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
       >
@@ -30,10 +37,10 @@
           @reset-validation="errors.password = $event"
         ></input-field>
 
-        <error-text
-          v-if="errors.httpError"
-          :error-text="errors.httpError"
-        ></error-text>
+        <notification-message v-if="errors.validate" notification-type="error">
+          {{ errors.validate }}
+        </notification-message>
+
         <div>
           <base-button @click="loginUser" text="Sign in"></base-button>
         </div>
@@ -53,27 +60,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { validateUserFields } from "@/utils/validation/validateUserFields";
-import { getErrors } from "@/utils/validation/getErrors";
+import {
+  getValidationErrors,
+  getErrorsFromResponse,
+} from "@/utils/validation/getValidationErrors";
 import { ValidationError } from "yup";
-import { setUserToken } from "@/utils/userAuth";
+import { setUserToken } from "@/utils/authUtils";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { httpClient } from "@/api";
+import {
+  getUserStoredData,
+  removeUserStoredData,
+} from "@/utils/localStorageUtils";
 import InputField from "@/components/kit/input/InputField.vue";
-import ErrorText from "@/components/kit/text/ErrorText.vue";
 import BaseButton from "@/components/kit/button/BaseButton.vue";
+import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
+const registeredUserName = ref("");
 const email = ref("");
 const password = ref("");
 const errors = ref<Record<string, string>>({});
 const userStore = useUserStore();
 const router = useRouter();
 
+onMounted(() => {
+  const { expirationTime, storedUserName, storedEmail } = getUserStoredData();
+
+  if (expirationTime && storedUserName && storedEmail) {
+    if (Date.now() < parseInt(expirationTime)) {
+      registeredUserName.value = storedUserName;
+      email.value = storedEmail;
+    } else {
+      removeUserStoredData();
+    }
+  }
+});
+
 async function loginUser() {
   try {
-    await validateUserFields(email.value, password.value);
+    await validateUserFields(undefined, email.value, password.value);
     errors.value = {};
 
     httpClient
@@ -86,14 +114,16 @@ async function loginUser() {
         setUserToken(userToken);
         userStore.setUserData(userName, userUploadLimit);
 
+        removeUserStoredData();
+
         router.push({ name: "home" });
       })
       .catch((error) => {
-        errors.value = { httpError: error.response.data.message };
+        errors.value = getErrorsFromResponse(error.response.data.data);
       });
   } catch (error) {
     if (error instanceof ValidationError) {
-      errors.value = getErrors(error);
+      errors.value = getValidationErrors(error);
     }
   }
 }

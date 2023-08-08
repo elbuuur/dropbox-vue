@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { isAuth } from "@/utils/userAuth";
+import { isAuth } from "@/utils/authUtils";
 import HomeView from "../views/HomeView.vue";
 import UserLogin from "@/components/UserLogin.vue";
 import UserRegistration from "@/components/UserRegistration.vue";

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { httpClient } from "@/api";
-import { isAuth } from "@/utils/userAuth";
+import { isAuth } from "@/utils/authUtils";
 
 export const useUserStore = defineStore("auth", {
   state: () => {
@@ -40,6 +40,7 @@ export const useUserStore = defineStore("auth", {
     },
 
     setUserData(nameValue: string, uploadLimitValue: number) {
+      this.isAuthenticated = true;
       this.userData.name = nameValue;
       this.userData.uploadLimit = uploadLimitValue;
     },

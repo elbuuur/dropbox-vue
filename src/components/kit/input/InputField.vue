@@ -14,14 +14,17 @@
         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
       />
 
-      <error-text v-if="error" :error-text="error"></error-text>
+      <notification-message v-if="error" notification-type="error">
+        {{ error }}
+      </notification-message>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from "vue";
-import ErrorText from "@/components/kit/text/ErrorText.vue";
+import ErrorText from "@/components/kit/notification/ErrorText.vue";
+import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
 const props = defineProps<{
   title?: string;
