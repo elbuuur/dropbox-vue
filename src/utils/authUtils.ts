@@ -9,5 +9,9 @@ export function isAuth() {
 }
 
 export function setUserToken(token: string) {
-  return Cookies.set(AUTH_TOKEN_NAME, token);
+  return Cookies.set(AUTH_TOKEN_NAME, token, { expires: 1 });
+}
+
+export function removeUserToken() {
+  Cookies.remove(AUTH_TOKEN_NAME);
 }

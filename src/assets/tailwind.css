@@ -3,3 +3,23 @@
 @tailwind components;
 
 @tailwind utilities;
+
+@layer base {
+    h2 {
+        @apply text-2xl font-bold leading-9 tracking-tight text-gray-900;
+    }
+
+    body {
+        background: #f7f9fc;
+    }
+
+    button {
+        @apply flex justify-center rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+    }
+}
+
+@layer components {
+    /*.container {*/
+    /*    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;*/
+    /*}*/
+}

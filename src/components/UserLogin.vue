@@ -1,6 +1,7 @@
 <template>
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <view-logo></view-logo>
       <notification-message
         v-if="registeredUserName"
         notification-type="success"
@@ -8,11 +9,7 @@
         Hi, {{ registeredUserName }}! <br />
         Your account has been successfully created
       </notification-message>
-      <h2
-        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
-      >
-        Sign in to your account
-      </h2>
+      <h2 class="mt-10 text-center">Sign in to your account</h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -50,7 +47,7 @@
         Not a member?
         <router-link
           :to="{ name: 'registration' }"
-          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          class="font-semibold leading-6 text-approx-teal-600 hover:text-approx-teal-500"
         >
           Register
         </router-link>
@@ -78,6 +75,7 @@ import {
 import InputField from "@/components/kit/input/InputField.vue";
 import BaseButton from "@/components/kit/button/BaseButton.vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
+import ViewLogo from "@/components/ViewLogo.vue";
 
 const registeredUserName = ref("");
 const email = ref("");
@@ -106,17 +104,17 @@ async function loginUser() {
 
     httpClient
       .post("login", { email: email.value, password: password.value })
-      .then((response) => {
+      .then(async (response) => {
         const userToken = response.data.data.token;
         const userName = response.data.data.user.name;
         const userUploadLimit = response.data.data.user.upload_limit;
 
-        setUserToken(userToken);
-        userStore.setUserData(userName, userUploadLimit);
-
         removeUserStoredData();
 
-        router.push({ name: "home" });
+        setUserToken(userToken);
+        await userStore.setUserData(userName, email.value, userUploadLimit);
+
+        await router.push({ name: "home" });
       })
       .catch((error) => {
         errors.value = getErrorsFromResponse(error.response.data.data);

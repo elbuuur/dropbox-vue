@@ -6,7 +6,7 @@ const userToken = getUserToken();
 export const httpClient = axios.create({
   baseURL: apiUrl,
   headers: {
-    Authorization: "Bearer " + userToken ? userToken : "",
+    Authorization: userToken ? `Bearer ${userToken}` : "",
     "Content-Type": "application/json",
   },
 });
