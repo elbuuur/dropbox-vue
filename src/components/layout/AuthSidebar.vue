@@ -5,17 +5,22 @@
     aria-label="Sidebar"
   >
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-      <ul class="space-y-2 font-medium">
+      <create-file-folder-button text="Create"></create-file-folder-button>
+      <ul class="space-y-2 font-medium mt-8">
         <li>
-          <create-file-folder-button text="Create"></create-file-folder-button>
+          <router-link
+            :to="{ name: 'trashbox' }"
+            class="flex items-center py-2 text-sm text-gray-600 rounded-lg dark:text-white hover:text-gray-400 group"
+            >Trashbox</router-link
+          >
         </li>
+        <li>Usage memory (separate component)</li>
         <li>
           <a
             @click="userStore.logoutUser()"
             href="#"
             class="flex items-center py-2 text-sm text-gray-600 rounded-lg dark:text-white hover:text-gray-400 group"
-          >
-            <span class="flex-1 whitespace-nowrap">Sign Out</span>
+            >Sign Out
           </a>
         </li>
       </ul>
@@ -25,7 +30,7 @@
 
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
-import CreateFileFolderButton from "@/components/kit/button/CreateFileFolderButton.vue";
+import CreateFileFolderButton from "@/components/CreatePopupTriggerButton.vue";
 import { useUserStore } from "@/stores/user";
 
 const props = defineProps<{

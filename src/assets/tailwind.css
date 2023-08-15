@@ -19,7 +19,15 @@
 }
 
 @layer components {
-    /*.container {*/
-    /*    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;*/
-    /*}*/
+    .dialog {
+        @apply relative z-50;
+    }
+
+    .dialog--overlay {
+        @apply fixed inset-0 z-50 overflow-y-auto;
+    }
+
+    .dialog--content {
+        @apply bg-white py-4 relative overflow-hidden bg-white text-left shadow-xl transition-all sm:max-w-max;
+    }
 }

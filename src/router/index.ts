@@ -20,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "registration",
     component: UserRegistration,
   },
+  {
+    path: "/trashbox",
+    name: "trashbox",
+    component: HomeView,
+  },
 ];
 
 const router = createRouter({
