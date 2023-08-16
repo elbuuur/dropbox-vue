@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { httpClient } from "@/api";
-import { isAuth, removeUserToken } from "@/utils/authUtils";
+import { isAuth, removeUserToken } from "@/utils/authUtil";
 
 export const useUserStore = defineStore("auth", {
   state: () => {

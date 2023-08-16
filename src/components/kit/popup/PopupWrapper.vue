@@ -4,8 +4,8 @@
       <div class="dialog--overlay">
         <div
           :style="{ top: clickPosition.y + 'px', left: clickPosition.x + 'px' }"
-          dialog-body
-          class="dialog--content"
+          data-dialog-body
+          class="dialog--content sm:max-w-max"
         >
           <slot></slot>
         </div>
@@ -24,7 +24,7 @@ interface ClickPositionInterface {
 }
 
 const props = defineProps<{
-  visible?: boolean;
+  visible: boolean;
   clickInfo: ClickPositionInterface;
 }>();
 
@@ -36,5 +36,5 @@ const emit = defineEmits<{
   (e: "closeDialog", value: boolean): void;
 }>();
 
-useDialogClickOutside("[dialog-body]", emit);
+useDialogClickOutside("[data-dialog-body]", emit);
 </script>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUserToken } from "@/utils/authUtils";
+import { getUserToken } from "@/utils/authUtil";
 const apiUrl = process.env.VUE_APP_API_URL as string;
 const userToken = getUserToken();
 

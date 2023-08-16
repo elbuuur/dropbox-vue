@@ -10,12 +10,20 @@
       />
     </svg>
   </popup-action-button>
+  <modal-wrapper title="New folder" :visible="visibleModal">
+    <create-folder-input></create-folder-input>
+  </modal-wrapper>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import PopupActionButton from "@/components/kit/button/PopupActionButton.vue";
+import ModalWrapper from "@/components/kit/modal/ModalWrapper.vue";
+import CreateFolderInput from "@/components/CreateFolderInput.vue";
+
+const visibleModal = ref(false);
 
 function createFolder() {
-  console.log("here");
+  visibleModal.value = true;
 }
 </script>

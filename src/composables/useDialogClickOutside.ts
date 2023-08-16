@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 export default function useDialogClickOutside(
   dialogBodySelector: string,
   emit: (event: "closeDialog", value: boolean) => void

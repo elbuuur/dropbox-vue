@@ -20,6 +20,7 @@
           :error="errors.email"
           name="email"
           type="email"
+          autocomplete="email"
           title="Email address"
           @reset-validation="errors.email = $event"
         ></input-field>
@@ -30,6 +31,7 @@
           :error="errors.password"
           name="password"
           type="password"
+          autocomplete="password"
           title="Password"
           @reset-validation="errors.password = $event"
         ></input-field>
@@ -58,20 +60,23 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { validateUserFields } from "@/utils/validation/validateUserFields";
+import { ValidationError } from "yup";
+import { useRouter } from "vue-router";
+
+import { validateFields } from "@/utils/validation/validateFieldsUtil";
 import {
   getValidationErrors,
   getErrorsFromResponse,
 } from "@/utils/validation/getValidationErrors";
-import { ValidationError } from "yup";
-import { setUserToken } from "@/utils/authUtils";
-import { useUserStore } from "@/stores/user";
-import { useRouter } from "vue-router";
-import { httpClient } from "@/api";
+import { setUserToken } from "@/utils/authUtil";
 import {
   getUserStoredData,
   removeUserStoredData,
-} from "@/utils/localStorageUtils";
+} from "@/utils/localStorageUtil";
+
+import { useUserStore } from "@/stores/user";
+import { httpClient } from "@/api";
+
 import InputField from "@/components/kit/input/InputField.vue";
 import BaseButton from "@/components/kit/button/BaseButton.vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
@@ -99,7 +104,11 @@ onMounted(() => {
 
 async function loginUser() {
   try {
-    await validateUserFields(undefined, email.value, password.value);
+    const validationData = {
+      email: email.value,
+      password: password.value,
+    };
+    await validateFields(validationData);
     errors.value = {};
 
     httpClient
