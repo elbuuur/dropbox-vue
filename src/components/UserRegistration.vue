@@ -1,11 +1,8 @@
 <template>
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <h2
-        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
-      >
-        Create account
-      </h2>
+      <view-logo></view-logo>
+      <h2 class="mt-10 text-center">Create account</h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -26,6 +23,7 @@
           :error="errors.email"
           name="email"
           type="email"
+          autocomplete="email"
           title="Email address"
           @reset-validation="errors.email = $event"
         ></input-field>
@@ -36,6 +34,7 @@
           :error="errors.password"
           name="password"
           type="password"
+          autocomplete="password"
           title="Password"
           @reset-validation="errors.password = $event"
         ></input-field>
@@ -53,7 +52,7 @@
         Have an account?
         <router-link
           :to="{ name: 'login' }"
-          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          class="font-semibold leading-6 text-approx-teal hover:text-approx-teal-500"
         >
           Login
         </router-link>
@@ -66,16 +65,18 @@
 import { ref } from "vue";
 import { ValidationError } from "yup";
 import { useRouter } from "vue-router";
-import { validateUserFields } from "@/utils/validation/validateUserFields";
+// import { validateUserFields } from "@/utils/validation/validateUserFields";
+import { validateFields } from "@/utils/validation/validateFieldsUtil";
 import {
   getValidationErrors,
   getErrorsFromResponse,
 } from "@/utils/validation/getValidationErrors";
 import { httpClient } from "@/api";
-import { saveUserStorageData } from "@/utils/localStorageUtils";
+import { saveUserStorageData } from "@/utils/localStorageUtil";
 import InputField from "@/components/kit/input/InputField.vue";
 import BaseButton from "@/components/kit/button/BaseButton.vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
+import ViewLogo from "@/components/ViewLogo.vue";
 
 const userName = ref("");
 const email = ref("");
@@ -85,7 +86,12 @@ const router = useRouter();
 
 async function registrationUser() {
   try {
-    await validateUserFields(userName.value, email.value, password.value);
+    const validationData = {
+      userName: userName.value,
+      email: email.value,
+      password: password.value,
+    };
+    await validateFields(validationData);
     errors.value = {};
 
     httpClient
