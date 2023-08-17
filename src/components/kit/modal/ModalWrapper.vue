@@ -4,7 +4,7 @@
       <div class="dialog--overlay">
         <div class="dialog--content-wrap">
           <div data-dialog-body class="dialog--content p-4 w-80">
-            <h3 class="mb-4">{{ title }}</h3>
+            <h3 class="mb-6 font-medium">{{ title }}</h3>
             <slot></slot>
           </div>
         </div>

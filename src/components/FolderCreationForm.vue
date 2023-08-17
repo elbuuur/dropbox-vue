@@ -8,10 +8,15 @@
     :error="errors.folderName"
     @reset-validation="errors.folderName = $event"
   ></input-field>
+  <div class="mt-6 flex justify-end gap-6">
+    <text-link-button @click="closeModal" text="Cancel"></text-link-button>
+    <text-link-button @click="createFolder" text="Create"></text-link-button>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
+import { ValidationError } from "yup";
 
 import { httpClient } from "@/api";
 import {
@@ -21,10 +26,13 @@ import {
 import { validateFields } from "@/utils/validation/validateFieldsUtil";
 
 import InputField from "@/components/kit/input/InputField.vue";
-import { ValidationError } from "yup";
+import TextLinkButton from "@/components/kit/button/TextLinkButton.vue";
 
 const folderName = ref("");
 const errors = ref<Record<string, string>>({});
+const emit = defineEmits<{
+  (e: "visibleModal", value: boolean): void;
+}>();
 
 async function createFolder() {
   try {
@@ -32,9 +40,7 @@ async function createFolder() {
     httpClient
       .post("folder/create", { folder_name: folderName.value })
       .then(async (response) => {
-        //настроить вывод
-        //подумать о том, как будет обновляться содержимое после добавления папки (составить роадмап)
-        console.log(response);
+        closeModal();
       })
       .catch((error) => {
         errors.value = getErrorsFromResponse(error.response.data.data);
@@ -44,5 +50,9 @@ async function createFolder() {
       errors.value = getValidationErrors(error);
     }
   }
+}
+
+function closeModal() {
+  emit("visibleModal", false);
 }
 </script>

@@ -65,7 +65,6 @@
 import { ref } from "vue";
 import { ValidationError } from "yup";
 import { useRouter } from "vue-router";
-// import { validateUserFields } from "@/utils/validation/validateUserFields";
 import { validateFields } from "@/utils/validation/validateFieldsUtil";
 import {
   getValidationErrors,
