@@ -17,6 +17,7 @@
     {{ props.text }}
   </button>
   <popup-wrapper
+    v-if="visiblePopup"
     :visible="visiblePopup"
     :click-info="clickPosition"
     @close-dialog="closeDialog"

@@ -8,13 +8,13 @@
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-6">
         <input-field
-          v-model="userName"
+          v-model="user_name"
           @keydown.enter="registrationUser"
-          :error="errors.userName"
+          :error="errors.user_name"
           name="userName"
           type="text"
           title="Your name"
-          @reset-validation="errors.userName = $event"
+          @reset-validation="errors.user_name = $event"
         ></input-field>
 
         <input-field
@@ -77,7 +77,7 @@ import BaseButton from "@/components/kit/button/BaseButton.vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 import ViewLogo from "@/components/ViewLogo.vue";
 
-const userName = ref("");
+const user_name = ref("");
 const email = ref("");
 const password = ref("");
 const errors = ref<Record<string, string>>({});
@@ -86,7 +86,7 @@ const router = useRouter();
 async function registrationUser() {
   try {
     const validationData = {
-      userName: userName.value,
+      user_name: user_name.value,
       email: email.value,
       password: password.value,
     };
@@ -95,12 +95,12 @@ async function registrationUser() {
 
     httpClient
       .post("register", {
-        name: userName.value,
+        name: user_name.value,
         email: email.value,
         password: password.value,
       })
       .then(() => {
-        saveUserStorageData(userName.value, email.value);
+        saveUserStorageData(user_name.value, email.value);
         router.push({ name: "login" });
       })
       .catch((error) => {
