@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from "vue";
+import { useEventListener } from "@/composables/useEventListener";
 export default function useDialogClickOutside(
   dialogBodySelector: string,
   emit: (event: "closeDialog", value: boolean) => void
@@ -8,16 +8,16 @@ export default function useDialogClickOutside(
       dialogBodySelector
     );
 
-    if (!activeTrigger) {
+    if (!activeTrigger && document.querySelector(dialogBodySelector)) {
+      console.log(
+        document.querySelector(dialogBodySelector),
+        "dialogBodySelector"
+      );
+      console.log(activeTrigger, "activeTrigger");
+      console.log("emit");
       emit("closeDialog", true);
     }
   };
 
-  onMounted(() => {
-    window.addEventListener("click", handleDialogClickOutside);
-  });
-
-  onUnmounted(() => {
-    window.removeEventListener("click", handleDialogClickOutside);
-  });
+  useEventListener(window, "click", handleDialogClickOutside);
 }

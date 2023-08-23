@@ -34,4 +34,8 @@
     .dialog--content-wrap {
         @apply flex min-h-full items-end justify-center sm:items-center;
     }
+
+    .column-4 {
+        @apply grid grid-cols-1 md:grid-cols-4 gap-4;
+    }
 }

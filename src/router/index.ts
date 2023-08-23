@@ -3,12 +3,13 @@ import { isAuth } from "@/utils/authUtil";
 import HomeView from "../views/HomeView.vue";
 import UserLogin from "@/components/UserLogin.vue";
 import UserRegistration from "@/components/UserRegistration.vue";
+import CCStorage from "@/modules/storage/CCStorage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
+    component: CCStorage,
   },
   {
     path: "/login",

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const yupFields = {
-  userName: yup
+  user_name: yup
     .string()
     .required("Name is required")
     .min(2, "Name must contain at least 2 characters"),
@@ -13,11 +13,11 @@ const yupFields = {
     .string()
     .required("Password is required")
     .min(8, "Password must contain at least 8 characters"),
-  folderName: yup
+  folder_name: yup
     .string()
     .required("Folder name is required")
     .min(2, "Folder name must be at least 2 characters"),
-  fileName: yup
+  file_name: yup
     .string()
     .required("File name is required")
     .min(3, "File name must be at least 3 characters"),

@@ -66,8 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
 import { ref, onMounted, onBeforeUnmount } from "vue";
+
+import { useUserStore } from "@/stores/user";
+import { useEventListener } from "@/composables/useEventListener";
 
 const userStore = useUserStore();
 const isOpenUserMenu = ref(false);
@@ -91,13 +93,7 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
-});
+useEventListener(document, "click", handleClickOutside);
 
 const toggleUserMenu = () => {
   isOpenUserMenu.value = !isOpenUserMenu.value;
