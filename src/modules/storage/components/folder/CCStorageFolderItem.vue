@@ -48,7 +48,10 @@
         </svg>
       </popup-action-button>
       <hr class="m-0.5" />
-      <popup-action-button text="Delete">
+      <popup-action-button
+        @click.stop="moveFolderToTrash(folder.id)"
+        text="Move to trash"
+      >
         <svg viewBox="0 0 20 20" fill="currentColor">
           <path
             fill-rule="evenodd"
@@ -74,12 +77,18 @@ type FolderProps = {
 const props = defineProps<FolderProps>();
 const emit = defineEmits<{
   (e: "openFolderChangeModal", value: number): void;
+  (e: "moveFolderToTrash", value: number): void;
 }>();
 const isOpenMenu = ref(false);
 
 function openFolderChangeModal(folderId: number) {
   isOpenMenu.value = false;
   emit("openFolderChangeModal", folderId);
+}
+
+function moveFolderToTrash(folderId: number) {
+  isOpenMenu.value = false;
+  emit("moveFolderToTrash", folderId);
 }
 
 const handleClickMenuOutside = (event: MouseEvent) => {
