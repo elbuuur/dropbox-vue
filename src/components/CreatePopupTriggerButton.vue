@@ -22,7 +22,7 @@
     :click-info="clickPosition"
     @close-dialog="closeDialog"
   >
-    <create-folder-button></create-folder-button>
+    <create-folder-button @visible-dialog="closeDialog"></create-folder-button>
     <file-upload-button></file-upload-button>
   </popup-wrapper>
 </template>

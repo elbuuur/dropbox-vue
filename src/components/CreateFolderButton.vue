@@ -10,21 +10,28 @@
       />
     </svg>
   </popup-action-button>
-  <modal-wrapper title="New folder" :visible="visibleModal">
-    <folder-creation-form
-      @visible-modal="visibleModal = $event"
-    ></folder-creation-form>
-  </modal-wrapper>
+  <folder-creation-form
+    v-if="visibleModal"
+    @visible-modal="closeModal"
+  ></folder-creation-form>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
+
 import PopupActionButton from "@/components/kit/button/PopupActionButton.vue";
-import ModalWrapper from "@/components/kit/modal/ModalWrapper.vue";
 import FolderCreationForm from "@/components/FolderCreationForm.vue";
+
+const emit = defineEmits<{
+  (e: "visibleDialog", value: boolean): void;
+}>();
 
 const visibleModal = ref(false);
 
+function closeModal() {
+  visibleModal.value = false;
+  emit("visibleDialog", false);
+}
 function openModal() {
   visibleModal.value = true;
 }

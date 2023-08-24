@@ -9,6 +9,7 @@
       <c-c-storage-folder-item
         :folder="folder"
         @open-folder-change-modal="emit('openFolderChangeModal', $event)"
+        @move-folder-to-trash="emit('moveFolderToTrash', $event)"
       ></c-c-storage-folder-item>
     </div>
   </div>
@@ -24,5 +25,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   (e: "openFolderChangeModal", value: number): void;
+  (e: "moveFolderToTrash", value: number): void;
 }>();
 </script>

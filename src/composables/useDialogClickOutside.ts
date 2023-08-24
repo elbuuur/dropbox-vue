@@ -9,12 +9,6 @@ export default function useDialogClickOutside(
     );
 
     if (!activeTrigger && document.querySelector(dialogBodySelector)) {
-      console.log(
-        document.querySelector(dialogBodySelector),
-        "dialogBodySelector"
-      );
-      console.log(activeTrigger, "activeTrigger");
-      console.log("emit");
       emit("closeDialog", true);
     }
   };
