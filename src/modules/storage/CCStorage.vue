@@ -11,6 +11,8 @@
     @move-folder-to-trash="moveFolderToTrash($event)"
   ></c-c-storage-folder-list>
 
+  {{ files }}
+
   <c-c-storage-change-entity-form
     v-if="visibleChangeModal"
     title="title 23"
@@ -32,7 +34,7 @@ import CCStorageChangeEntityForm from "@/modules/storage/components/CCStorageCha
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
 const folders = ref<Array<Record<string, string | number>>>();
-const files = ref([]);
+const files = ref<Array<Record<string, string | number>>>();
 const errors = ref<Record<string, string>>({});
 const visibleChangeModal = ref(false);
 
@@ -56,6 +58,9 @@ function loadStorageData() {
       const data = response.data.data;
       if (data.folders) {
         folders.value = data.folders;
+      }
+      if (data.files) {
+        files.value = data.files;
       }
     })
     .catch((error) => {
