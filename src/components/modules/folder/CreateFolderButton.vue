@@ -20,7 +20,7 @@
 import { ref, defineEmits } from "vue";
 
 import PopupActionButton from "@/components/kit/button/PopupActionButton.vue";
-import FolderCreationForm from "@/components/FolderCreationForm.vue";
+import FolderCreationForm from "@/components/modules/folder/FolderCreationForm.vue";
 
 const emit = defineEmits<{
   (e: "visibleDialog", value: boolean): void;
