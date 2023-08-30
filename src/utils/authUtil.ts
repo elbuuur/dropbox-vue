@@ -9,7 +9,7 @@ export function isAuth() {
 }
 
 export function setUserToken(token: string) {
-  return Cookies.set(AUTH_TOKEN_NAME, token, { expires: 1 });
+  Cookies.set(AUTH_TOKEN_NAME, token, { expires: 1 });
 }
 
 export function removeUserToken() {

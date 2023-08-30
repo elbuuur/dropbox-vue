@@ -1,5 +1,11 @@
 <template>
-  <svg width="24" height="24" viewBox="0 0 1024 1024" fill="#000000">
+  <svg
+    class="svg-icon-size"
+    width="24"
+    height="24"
+    viewBox="0 0 1024 1024"
+    fill="#000000"
+  >
     <g id="SVGRepo_bgCarrier" stroke-width="0" />
     <g
       id="SVGRepo_tracerCarrier"
@@ -17,7 +23,9 @@
       />
     </g>
   </svg>
-  <div class="px-3 mr-auto text-sm">{{ folder.folder_name }}</div>
+  <div class="px-3 mr-auto text-sm single-line-ellipsis">
+    {{ folder.folder_name }}
+  </div>
   <div data-folder-menu class="relative">
     <div @click="isOpenMenu = !isOpenMenu">
       <svg

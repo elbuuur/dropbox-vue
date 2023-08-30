@@ -19,6 +19,13 @@
 }
 
 @layer components {
+    .svg-icon-size {
+        @apply w-6 h-6 min-w-fit;
+    }
+
+    .single-line-ellipsis {
+        @apply overflow-hidden whitespace-nowrap overflow-ellipsis;
+    }
     .dialog {
         @apply relative z-50;
     }
