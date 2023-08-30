@@ -1,4 +1,5 @@
 <template>
+  <view-loader v-if="isLoading"></view-loader>
   <div v-if="errors.value" class="w-max">
     <notification-message class="my-4" notification-type="error">
       {{ errors }}
@@ -11,7 +12,12 @@
     @move-folder-to-trash="moveFolderToTrash($event)"
   ></c-c-storage-folder-list>
 
-  {{ files }}
+  <c-c-storage-file-list
+    v-if="files"
+    :files="files"
+    @open-file-change-modal="openChangeModal('file', $event)"
+    @move-file-to-trash="moveFileToTrash($event)"
+  ></c-c-storage-file-list>
 
   <c-c-storage-change-entity-form
     v-if="visibleChangeModal"
@@ -29,10 +35,13 @@ import { ref, onMounted } from "vue";
 import { httpClient } from "@/api";
 import eventBus from "@/utils/eventBusUtil";
 
+import ViewLoader from "@/components/modules/ViewLoader.vue";
+import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 import CCStorageFolderList from "@/modules/storage/components/folder/CCStorageFolderList.vue";
 import CCStorageChangeEntityForm from "@/modules/storage/components/CCStorageChangeEntityForm.vue";
-import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
+import CCStorageFileList from "@/modules/storage/components/file/CCStorageFileList.vue";
 
+const isLoading = ref(false);
 const folders = ref<Array<Record<string, string | number>>>();
 const files = ref<Array<Record<string, string | number>>>();
 const errors = ref<Record<string, string>>({});
@@ -52,6 +61,7 @@ eventBus.on("updateStorage", (e) => {
 });
 
 function loadStorageData() {
+  isLoading.value = true;
   httpClient
     .post("home")
     .then(async (response) => {
@@ -65,6 +75,9 @@ function loadStorageData() {
     })
     .catch((error) => {
       errors.value = error.response.data.message;
+    })
+    .finally(() => {
+      isLoading.value = false;
     });
 }
 
@@ -119,5 +132,9 @@ function moveFolderToTrash(folderId: number) {
     .catch((error) => {
       errors.value = error.response.data.message;
     });
+}
+
+function moveFileToTrash($fileId: number) {
+  console.log("move to trash file");
 }
 </script>

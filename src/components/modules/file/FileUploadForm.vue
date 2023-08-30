@@ -1,4 +1,5 @@
 <template>
+  <view-loader v-if="isLoading"></view-loader>
   <modal-wrapper title="Upload files" :visible="true">
     <input-checkbox
       label-text="Set file retention days"
@@ -43,21 +44,20 @@
 </template>
 
 <script setup lang="ts">
-// записывать в стор данные по лимитам (метод на бэке обновлен)
-// добавить валидацию по размеру файла на фронте
-// посмотреть что там по кешу после заливки файлов
-
 import { ref, defineProps, defineEmits } from "vue";
 
 import { httpClient } from "@/api";
 import eventBus from "@/utils/eventBusUtil";
+import { getErrorsFromResponse } from "@/utils/validation/getValidationErrors";
 
 import InputField from "@/components/kit/input/InputField.vue";
 import InputCheckbox from "@/components/kit/input/InputCheckbox.vue";
 import ModalWrapper from "@/components/kit/modal/ModalWrapper.vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 import TextLinkButton from "@/components/kit/button/TextLinkButton.vue";
-import { getErrorsFromResponse } from "@/utils/validation/getValidationErrors";
+import ViewLoader from "@/components/modules/ViewLoader.vue";
+
+const isLoading = ref(false);
 
 const props = defineProps<{
   folderId?: number;
@@ -75,7 +75,7 @@ const errors = ref<Record<string, string>>({});
 interface HttpData {
   file: FileList;
   folder_id?: number;
-  shelf_life?: number;
+  shelf_life?: string;
 }
 
 function closeModal() {
@@ -86,6 +86,7 @@ function uploadFiles() {
   let selectedFiles = document.querySelector("#filesInput") as HTMLInputElement;
 
   if (selectedFiles && selectedFiles.files) {
+    isLoading.value = true;
     let httpData: HttpData = {
       file: selectedFiles.files,
     };
@@ -95,7 +96,7 @@ function uploadFiles() {
     }
 
     if (hasRetentionDays.value) {
-      httpData.shelf_life = fileRetentionDays.value;
+      httpData.shelf_life = fileRetentionDays.value.toString();
     }
 
     httpClient
@@ -107,6 +108,9 @@ function uploadFiles() {
       .catch((error) => {
         console.log(error.response.data);
         errors.value = getErrorsFromResponse(error.response.data);
+      })
+      .finally(() => {
+        isLoading.value = false;
       });
   } else {
     console.log("smth wrong");
