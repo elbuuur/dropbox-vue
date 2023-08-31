@@ -8,6 +8,7 @@
     </label>
     <div class="mt-2">
       <input
+        ref="inputRef"
         :disabled="disabled"
         :value="modelValue"
         :type="type"
@@ -27,10 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, ref, onMounted } from "vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
 const props = defineProps<{
+  autoFocusAndSelect?: boolean;
   title?: string;
   name?: string;
   type?: string;
@@ -45,6 +47,15 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "resetValidation", value: string): void;
 }>();
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+onMounted(() => {
+  if (props.autoFocusAndSelect && inputRef.value) {
+    inputRef.value.focus();
+    inputRef.value.select();
+  }
+});
 
 function updateModelValue(e: InputEvent) {
   let target = e.target as HTMLInputElement;
