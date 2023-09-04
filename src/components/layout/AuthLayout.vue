@@ -3,7 +3,7 @@
     <auth-header @toggle-sidebar="handleToggle"></auth-header>
     <auth-sidebar :is-mobile-sidebar-visible="showMobileSidebar"></auth-sidebar>
     <div class="p-4 sm:ml-64">
-      <div class="p-4 dark:border-gray-700 mt-14">
+      <div class="p-4 mt-14">
         <slot></slot>
       </div>
     </div>

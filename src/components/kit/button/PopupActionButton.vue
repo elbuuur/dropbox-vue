@@ -2,10 +2,10 @@
   <button
     class="flex items-center gap-4 py-1.5 px-5 w-full min-w-max justify-start border-none shadow-none hover:bg-gray-300 rounded-none"
   >
-    <div class="w-4">
+    <div class="w-4 flex items-center justify-center">
       <slot></slot>
     </div>
-    <span class="text-sm text-gray-600 rounded-lg dark:text-white">
+    <span class="text-sm text-gray-600 rounded-lg">
       {{ props.text }}
     </span>
   </button>

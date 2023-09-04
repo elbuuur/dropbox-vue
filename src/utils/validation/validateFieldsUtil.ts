@@ -21,12 +21,23 @@ const yupFields = {
     .string()
     .required("File name is required")
     .min(3, "File name must be at least 3 characters"),
+  shelf_life: yup
+    .number()
+    .integer("The number must be an integer")
+    .max(365, "The number must not exceed 365")
+    .test("no-exponent", "Exponent input not allowed", (value) => {
+      if (value === undefined || value === null) {
+        return true;
+      }
+
+      return value === Math.floor(value);
+    }),
 };
 
 const validationSchema = yup.object().shape(yupFields);
 
 export const validateFields = async (
-  data: Partial<Record<keyof typeof yupFields, string | undefined>>
+  data: Partial<Record<keyof typeof yupFields, string | number | undefined>>
 ) => {
   try {
     const fieldsName = Object.keys(data) as (keyof typeof yupFields)[];

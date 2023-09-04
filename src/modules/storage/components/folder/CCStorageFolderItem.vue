@@ -23,11 +23,11 @@
       />
     </g>
   </svg>
-  <div class="px-3 mr-auto text-sm single-line-ellipsis">
+  <div class="px-3 mr-auto text-sm text-gray-800 single-line-ellipsis">
     {{ folder.folder_name }}
   </div>
-  <div data-folder-menu class="relative">
-    <div @click="isOpenMenu = !isOpenMenu">
+  <div data-entity-menu class="relative">
+    <div @click="isOpenMenu = !isOpenMenu" class="cursor-pointer">
       <svg
         fill="currentColor"
         class="w-5 h-5"
@@ -47,7 +47,7 @@
     >
       <popup-action-button
         @click.stop="openFolderChangeModal(folder.id)"
-        text="Edit"
+        text="Rename"
       >
         <svg viewBox="0 0 20 20" fill="currentColor">
           <path
@@ -55,6 +55,24 @@
           ></path>
         </svg>
       </popup-action-button>
+
+      <hr class="m-0.5" />
+
+      <popup-action-button text="Info">
+        <svg width="20px" height="20px" viewBox="0 0 48 48" fill="currentColor">
+          <g id="Layer_2" data-name="Layer 2">
+            <g id="invisible_box" data-name="invisible box">
+              <rect width="48" height="48" fill="none" />
+            </g>
+            <g id="icons_Q2" data-name="icons Q2">
+              <path
+                d="M24,2A22,22,0,1,0,46,24,21.9,21.9,0,0,0,24,2Zm2,32a2,2,0,0,1-4,0V22a2,2,0,0,1,4,0ZM24,16a2,2,0,1,1,2-2A2,2,0,0,1,24,16Z"
+              />
+            </g>
+          </g>
+        </svg>
+      </popup-action-button>
+
       <hr class="m-0.5" />
       <popup-action-button
         @click.stop="moveFolderToTrash(folder.id)"
@@ -101,7 +119,7 @@ function moveFolderToTrash(folderId: number) {
 
 const handleClickMenuOutside = (event: MouseEvent) => {
   const activeTrigger = (event.target as HTMLElement).closest(
-    "[data-folder-menu]"
+    "[data-entity-menu]"
   );
 
   if (isOpenMenu.value && !activeTrigger) {

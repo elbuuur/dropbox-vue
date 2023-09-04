@@ -19,6 +19,11 @@
 }
 
 @layer components {
+    .text-xxs {
+        font-size: 0.5rem;
+        line-height: .75rem;
+    }
+
     .svg-icon-size {
         @apply w-6 h-6 min-w-fit;
     }

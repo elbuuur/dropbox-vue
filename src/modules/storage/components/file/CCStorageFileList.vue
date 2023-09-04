@@ -4,11 +4,14 @@
     <div
       v-for="file of files"
       :key="file.id"
-      class="flex flex-col gap-2 justify-between bg-white rounded-md p-3 cursor-pointer transition duration-500 ease-in-out hover:shadow hover:bg-gray-200"
+      class="flex flex-col gap-2 justify-between bg-white rounded-md p-3 transition duration-500 ease-in-out hover:shadow hover:bg-gray-200"
     >
       <c-c-storage-file-item
         :file="file"
-        @open-file-change-modal="emit('openFileChangeModal', $event)"
+        @open-file-name-change-modal="emit('openFileNameChangeModal', $event)"
+        @open-file-shelf-life-change-modal="
+          emit('openFileShelfLifeChangeModal', $event)
+        "
         @move-file-to-trash="emit('moveFileToTrash', $event)"
       ></c-c-storage-file-item>
     </div>
@@ -24,7 +27,8 @@ const props = defineProps<{
   files: Array<Record<string, string>>;
 }>();
 const emit = defineEmits<{
-  (e: "openFileChangeModal", value: number): void;
+  (e: "openFileNameChangeModal", value: number): void;
   (e: "moveFileToTrash", value: number): void;
+  (e: "openFileShelfLifeChangeModal", value: number): void;
 }>();
 </script>

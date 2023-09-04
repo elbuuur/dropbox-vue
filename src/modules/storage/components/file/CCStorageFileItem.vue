@@ -1,14 +1,17 @@
 <template>
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-start">
     <file-type-icon
-      class="max-h-4"
+      class="max-h-4 mt-0.5"
       :file-type="file.extension"
     ></file-type-icon>
-    <div class="px-3 mr-auto text-sm single-line-ellipsis">
-      {{ file.file_name }}
+    <div class="px-3 mr-auto flex flex-col overflow-x-hidden">
+      <div class="text-sm text-gray-800 single-line-ellipsis">
+        {{ file.file_name }}
+      </div>
     </div>
-    <div data-folder-menu class="relative">
-      <div @click="isOpenMenu = !isOpenMenu">
+
+    <div data-entity-menu class="relative z-10">
+      <div @click="isOpenMenu = !isOpenMenu" class="cursor-pointer">
         <svg
           fill="currentColor"
           class="w-5 h-5"
@@ -27,8 +30,8 @@
         class="mt-1 absolute bg-white text-gray-600 origin-top-right right-0 mt-2 w-56 shadow-lg overflow-hidden"
       >
         <popup-action-button
-          @click.stop="openFileChangeModal(file.id)"
-          text="Edit"
+          @click.stop="openFileNameChangeModal(file.id)"
+          text="Rename"
         >
           <svg viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -36,6 +39,35 @@
             ></path>
           </svg>
         </popup-action-button>
+
+        <popup-action-button
+          @click.stop="openFileShelfLifeChangeModal(file.id)"
+          text="Change retention days"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fill-rule="evenodd"
+              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </popup-action-button>
+
+        <popup-action-button text="Move to...">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fill-rule="evenodd"
+              d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"
+              clip-rule="evenodd"
+            ></path>
+            <path
+              d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z"
+            ></path>
+          </svg>
+        </popup-action-button>
+
+        <hr class="m-0.5" />
+
         <popup-action-button text="Download">
           <svg viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" style="">
             <path
@@ -45,7 +77,31 @@
             ></path>
           </svg>
         </popup-action-button>
+
         <hr class="m-0.5" />
+
+        <popup-action-button text="Info">
+          <svg
+            width="20px"
+            height="20px"
+            viewBox="0 0 48 48"
+            fill="currentColor"
+          >
+            <g id="Layer_2" data-name="Layer 2">
+              <g id="invisible_box" data-name="invisible box">
+                <rect width="48" height="48" fill="none" />
+              </g>
+              <g id="icons_Q2" data-name="icons Q2">
+                <path
+                  d="M24,2A22,22,0,1,0,46,24,21.9,21.9,0,0,0,24,2Zm2,32a2,2,0,0,1-4,0V22a2,2,0,0,1,4,0ZM24,16a2,2,0,1,1,2-2A2,2,0,0,1,24,16Z"
+                />
+              </g>
+            </g>
+          </svg>
+        </popup-action-button>
+
+        <hr class="m-0.5" />
+
         <popup-action-button
           @click.stop="moveFileToTrash(file.id)"
           text="Move to trash"
@@ -61,12 +117,21 @@
       </div>
     </div>
   </div>
-  <img
-    :src="file.thumb"
-    class="h-40 rounded-md object-cover"
-    :class="{ 'bg-gray-200': !file.thumb }"
-    :alt="file.file_name"
-  />
+  <div class="rounded-md bg-gray-200 w-full h-40 relative">
+    <div
+      v-if="file.shelf_life"
+      class="text-xxs bg-selective-yellow text-white bg-opacity-80 px-1 w-fit rounded-md absolute top-0.5 left-0.5"
+    >
+      Stored until: <br />
+      {{ file.shelf_life.split(" ")[0] }}
+    </div>
+    <img
+      v-if="file.thumb"
+      :src="file.thumb"
+      class="rounded-md object-cover h-40 w-full"
+      :alt="file.file_name"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -82,24 +147,30 @@ type FileProps = {
 
 const props = defineProps<FileProps>();
 const emit = defineEmits<{
-  (e: "openFileChangeModal", value: number): void;
+  (e: "openFileNameChangeModal", value: number): void;
   (e: "moveFileToTrash", value: number): void;
+  (e: "openFileShelfLifeChangeModal", value: number): void;
 }>();
 const isOpenMenu = ref(false);
 
-function openFileChangeModal(folderId: number) {
+function openFileNameChangeModal(fileId: number) {
   isOpenMenu.value = false;
-  emit("openFileChangeModal", folderId);
+  emit("openFileNameChangeModal", fileId);
 }
 
-function moveFileToTrash(folderId: number) {
+function openFileShelfLifeChangeModal(fileId: number) {
   isOpenMenu.value = false;
-  emit("moveFileToTrash", folderId);
+  emit("openFileShelfLifeChangeModal", fileId);
+}
+
+function moveFileToTrash(fileId: number) {
+  isOpenMenu.value = false;
+  emit("moveFileToTrash", fileId);
 }
 
 const handleClickMenuOutside = (event: MouseEvent) => {
   const activeTrigger = (event.target as HTMLElement).closest(
-    "[data-folder-menu]"
+    "[data-entity-menu]"
   );
 
   if (isOpenMenu.value && !activeTrigger) {
