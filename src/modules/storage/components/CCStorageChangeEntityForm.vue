@@ -16,6 +16,7 @@
     </notification-message>
 
     <input-field
+      ref="inputFieldRef"
       @keydown.enter="updateEntityField(entityFormData.id)"
       v-model="entityModel"
       :type="typeInput"
@@ -24,7 +25,6 @@
       @reset-validation="
         errors[props.entityFormData.changeableEntityField] = $event
       "
-      :auto-focus-and-select="true"
     ></input-field>
     <div class="mt-6 flex justify-end gap-6">
       <text-link-button
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from "vue";
+import { ref, defineProps, defineEmits, onMounted } from "vue";
 
 import ModalWrapper from "@/components/kit/modal/ModalWrapper.vue";
 import InputField from "@/components/kit/input/InputField.vue";
@@ -65,6 +65,7 @@ const props = defineProps<{
   };
 }>();
 
+const inputFieldRef = ref<InstanceType<typeof InputField> | null>(null);
 const typeInput = props.entityFormData.shelfLife ? "number" : "text";
 
 const emit = defineEmits<{
@@ -82,6 +83,10 @@ const emit = defineEmits<{
 
 const entityModel = ref(props.entityFormData.name);
 const errors = ref<Record<string, string>>({});
+
+onMounted(() => {
+  inputFieldRef.value?.handleFocus();
+});
 
 async function updateEntityField(entityId: number) {
   try {

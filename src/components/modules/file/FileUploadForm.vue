@@ -99,7 +99,7 @@ function closeModal() {
 
 async function uploadFiles() {
   try {
-    let selectedFiles = filesInputRef.value.files;
+    const selectedFiles = filesInputRef.value.files;
 
     if (!selectedFiles || selectedFiles.length < 1) {
       throw new Error("File is required");
@@ -121,10 +121,12 @@ async function uploadFiles() {
       .finally(() => {
         isLoading.value = false;
       });
-  } catch (error: any) {
-    errors.value = {
-      file: error.message,
-    };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      errors.value = {
+        file: error.message,
+      };
+    }
   }
 }
 

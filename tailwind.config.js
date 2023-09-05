@@ -7,6 +7,9 @@ module.exports = {
         "approx-teal": "#007d8a",
         "selective-yellow": "#FFB500",
       },
+      fontSize: {
+        xxs: "0.5rem",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],
