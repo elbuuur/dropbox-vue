@@ -8,8 +8,8 @@
   <c-c-storage-folder-list
     v-if="folders"
     :folders="folders"
-    @open-folder-change-modal="openChangeModal('folder', $event, false)"
-    @move-folder-to-trash="moveFolderToTrash($event)"
+    @update-folder-name="updateFolderName($event)"
+    @update-folders-after-move-to-trash="updateFolderAfterMoveToTrash($event)"
   ></c-c-storage-folder-list>
 
   <c-c-storage-file-list
@@ -142,27 +142,23 @@ function updateEntity(updateEntityData: {
   shelf_life: string | null;
 }) {
   if (updateEntityData.type === "folder") {
-    updateEntityFolders(updateEntityData);
+    // updateEntityFolders(updateEntityData);
   } else if (updateEntityData.type === "file") {
     updateEntityFiles(updateEntityData);
   }
   visibleChangeModal.value = false;
 }
 
-function updateEntityFolders(updateEntityData: {
-  type: string;
-  id: number;
-  name: string;
-}) {
+function updateFolderName(folderData: { id: number; name: string }) {
   if (!Array.isArray(folders.value)) {
     return;
   }
 
   folders.value = folders.value.map((folder) => {
-    if (folder.id === updateEntityData.id) {
+    if (folder.id === folderData.id) {
       return {
         ...folder,
-        folder_name: updateEntityData.name,
+        folder_name: folderData.name,
       };
     }
     return folder;
@@ -193,19 +189,12 @@ function updateEntityFiles(updateEntityData: {
   });
 }
 
-function moveFolderToTrash(folderId: number) {
-  httpClient
-    .delete(`folder/${folderId}`)
-    .then(async () => {
-      if (!folders.value) {
-        return;
-      }
+function updateFolderAfterMoveToTrash(folderId: number) {
+  if (!folders.value) {
+    return;
+  }
 
-      folders.value = folders.value.filter((folder) => folder.id !== folderId);
-    })
-    .catch((error) => {
-      errors.value = error.response.data.message;
-    });
+  folders.value = folders.value.filter((folder) => folder.id !== folderId);
 }
 
 function moveFileToTrash($fileId: number) {

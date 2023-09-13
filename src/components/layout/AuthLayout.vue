@@ -8,12 +8,15 @@
       </div>
     </div>
   </div>
+  <flash-notification-message> </flash-notification-message>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import AuthSidebar from "@/components/layout/AuthSidebar.vue";
-import { ref } from "vue";
+import FlashNotificationMessage from "@/components/kit/notification/FlashNotificationMessage.vue";
 
 const showMobileSidebar = ref(false);
 

@@ -45,10 +45,7 @@
       v-if="isOpenMenu"
       class="mt-1 absolute bg-white text-gray-600 origin-top-right right-0 mt-2 w-56 shadow-lg overflow-hidden"
     >
-      <popup-action-button
-        @click.stop="openFolderChangeModal(folder.id)"
-        text="Rename"
-      >
+      <popup-action-button @click.stop="openFolderChangeModal()" text="Rename">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <path
             d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
@@ -75,7 +72,7 @@
 
       <hr class="m-0.5" />
       <popup-action-button
-        @click.stop="moveFolderToTrash(folder.id)"
+        @click.stop="moveFolderToTrash()"
         text="Move to trash"
       >
         <svg viewBox="0 0 20 20" fill="currentColor">
@@ -88,6 +85,13 @@
       </popup-action-button>
     </div>
   </div>
+
+  <c-c-storage-folder-item-change-name-form
+    v-if="visibleChangeForm"
+    @visible-change-modal="visibleChangeForm = $event"
+    :folder-data="folderData"
+    @update-folder-name="updateFolderName($event)"
+  ></c-c-storage-folder-item-change-name-form>
 </template>
 
 <script setup lang="ts">
@@ -95,28 +99,71 @@ import { ref, defineProps, defineEmits } from "vue";
 import { useEventListener } from "@/composables/useEventListener";
 
 import PopupActionButton from "@/components/kit/button/PopupActionButton.vue";
+import CCStorageFolderItemChangeNameForm from "@/modules/storage/components/folder/CCStorageFolderItemChangeNameForm.vue";
+import { httpClient } from "@/api";
+
+import { useFlashNotificationStore } from "@/stores/flashNotifications";
 
 type FolderProps = {
-  folder: Record<string, string>;
+  folder: Record<string, string | number>;
 };
+
+interface folderDataInterface {
+  id: number;
+  name: string;
+}
 
 const props = defineProps<FolderProps>();
 const emit = defineEmits<{
-  (e: "openFolderChangeModal", value: number): void;
-  (e: "moveFolderToTrash", value: number): void;
+  (e: "updateFoldersAfterMoveToTrash", value: number): void;
+  (e: "updateFolderName", value: folderDataInterface): void;
 }>();
+
 const isOpenMenu = ref(false);
+const visibleChangeForm = ref(false);
+const notificationStore = useFlashNotificationStore();
 
-function openFolderChangeModal(folderId: number) {
+const initialFolderData: folderDataInterface = {
+  id: 0,
+  name: "",
+};
+
+const folderData = ref(initialFolderData);
+
+function openFolderChangeModal() {
   isOpenMenu.value = false;
-  emit("openFolderChangeModal", folderId);
+  visibleChangeForm.value = true;
+
+  folderData.value = {
+    id: props.folder.id as number,
+    name: props.folder.folder_name as string,
+  };
 }
 
-function moveFolderToTrash(folderId: number) {
-  isOpenMenu.value = false;
-  emit("moveFolderToTrash", folderId);
+function updateFolderName(folderData: folderDataInterface) {
+  emit("updateFolderName", folderData);
+  visibleChangeForm.value = false;
 }
 
+function moveFolderToTrash() {
+  isOpenMenu.value = false;
+
+  const folderId = props.folder.id as number;
+
+  httpClient
+    .delete(`folder/${folderId}`)
+    .then(async () => {
+      emit("updateFoldersAfterMoveToTrash", folderId);
+    })
+    .catch((error) => {
+      const errorText = error.response.data.message;
+      notificationStore.addNotification({
+        type: "error",
+        text: errorText,
+        time: 5000,
+      });
+    });
+}
 const handleClickMenuOutside = (event: MouseEvent) => {
   const activeTrigger = (event.target as HTMLElement).closest(
     "[data-entity-menu]"

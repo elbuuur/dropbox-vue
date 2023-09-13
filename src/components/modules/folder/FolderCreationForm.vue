@@ -1,6 +1,7 @@
 <template>
   <modal-wrapper title="New folder" :visible="true">
     <input-field
+      ref="inputFieldRef"
       v-model="folder_name"
       @keydown.enter="createFolder"
       name="folder_name"
@@ -17,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, onMounted } from "vue";
 import { ValidationError } from "yup";
 
 import { httpClient } from "@/api";
@@ -32,11 +33,16 @@ import InputField from "@/components/kit/input/InputField.vue";
 import TextLinkButton from "@/components/kit/button/TextLinkButton.vue";
 import ModalWrapper from "@/components/kit/modal/ModalWrapper.vue";
 
+const inputFieldRef = ref<InstanceType<typeof InputField> | null>(null);
 const folder_name = ref("");
 const errors = ref<Record<string, string>>({});
 const emit = defineEmits<{
   (e: "visibleModal", value: boolean): void;
 }>();
+
+onMounted(() => {
+  inputFieldRef.value?.handleFocus();
+});
 
 async function createFolder() {
   try {
