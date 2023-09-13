@@ -8,6 +8,7 @@
     </label>
     <div class="mt-2">
       <input
+        ref="inputRef"
         :disabled="disabled"
         :value="modelValue"
         :type="type"
@@ -16,7 +17,9 @@
         :placeholder="placeholder"
         @keydown.enter="updateModelValue"
         @input="updateModelValue"
+        :min="type === 'number' ? '0' : null"
         class="disabled:opacity-50 bg-transparent block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-approx-teal focus:ring-approx-teal-600 sm:text-sm sm:leading-6"
+        @focus="handleFocus"
       />
 
       <notification-message v-if="error" notification-type="error">
@@ -27,10 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, ref, defineExpose } from "vue";
 import NotificationMessage from "@/components/kit/notification/NotificationMessage.vue";
 
 const props = defineProps<{
+  autoFocusAndSelect?: boolean;
   title?: string;
   name?: string;
   type?: string;
@@ -45,6 +49,19 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "resetValidation", value: string): void;
 }>();
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+const handleFocus = () => {
+  if (!inputRef.value) return;
+  inputRef.value.focus();
+  inputRef.value.select();
+};
+
+defineExpose({
+  inputRef,
+  handleFocus,
+});
 
 function updateModelValue(e: InputEvent) {
   let target = e.target as HTMLInputElement;

@@ -8,8 +8,10 @@
     >
       <c-c-storage-folder-item
         :folder="folder"
-        @open-folder-change-modal="emit('openFolderChangeModal', $event)"
-        @move-folder-to-trash="emit('moveFolderToTrash', $event)"
+        @update-folder-name="emit('updateFolderName', $event)"
+        @update-folders-after-move-to-trash="
+          emit('updateFoldersAfterMoveToTrash', $event)
+        "
       ></c-c-storage-folder-item>
     </div>
   </div>
@@ -21,10 +23,17 @@ import { ref, defineProps, defineEmits } from "vue";
 import CCStorageFolderItem from "@/modules/storage/components/folder/CCStorageFolderItem.vue";
 
 const props = defineProps<{
-  folders: Array<Record<string, string>>;
+  folders: Array<Record<string, string | number | null>>;
 }>();
+
 const emit = defineEmits<{
-  (e: "openFolderChangeModal", value: number): void;
-  (e: "moveFolderToTrash", value: number): void;
+  (e: "updateFoldersAfterMoveToTrash", value: number): void;
+  (
+    e: "updateFolderName",
+    value: {
+      id: number;
+      name: string;
+    }
+  ): void;
 }>();
 </script>

@@ -1,16 +1,16 @@
 <template>
   <aside
     :class="{ '-translate-x-full': isMobile && !isMobileVisible }"
-    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 sm:translate-x-0"
     aria-label="Sidebar"
   >
-    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+    <div class="h-full px-3 pb-4 overflow-y-auto bg-white">
       <create-file-folder-button text="Create"></create-file-folder-button>
       <ul class="space-y-2 font-medium mt-8">
         <li>
           <router-link
             :to="{ name: 'trashbox' }"
-            class="flex items-center py-2 text-sm text-gray-600 rounded-lg dark:text-white hover:text-gray-400 group"
+            class="flex items-center py-2 text-sm text-gray-600 rounded-lg hover:text-gray-400 group"
             >Trashbox</router-link
           >
         </li>
@@ -19,7 +19,7 @@
           <a
             @click="userStore.logoutUser()"
             href="#"
-            class="flex items-center py-2 text-sm text-gray-600 rounded-lg dark:text-white hover:text-gray-400 group"
+            class="flex items-center py-2 text-sm text-gray-600 rounded-lg hover:text-gray-400 group"
             >Sign Out
           </a>
         </li>

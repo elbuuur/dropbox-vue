@@ -6,9 +6,10 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
 import AuthLayout from "@/components/layout/AuthLayout.vue";
 import { useUserStore } from "@/stores/user";
-import { computed } from "vue";
 
 const userStore = useUserStore();
 
